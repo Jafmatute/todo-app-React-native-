@@ -3,10 +3,11 @@ import { StyleSheet, Text, View, TouchableOpacity, Modal } from "react-native";
 import Colors from "../customs/Colors";
 import TodoModal from "../components/TodoModal";
 
-export default TodoList = ({ list }) => {
+export default TodoList = ({ list, updateList }) => {
+  const [showListVisble, setShowIsVisible] = useState(false);
+  //console.log(updateList);
   const completedCount = list.todos.filter((todo) => todo.completed).length;
   const remainingCount = list.todos.length - completedCount;
-  const [showListVisble, setShowIsVisible] = useState(false);
 
   /*function toggleListModal() {
     setShowIsVisible(true);
@@ -19,7 +20,11 @@ export default TodoList = ({ list }) => {
         visible={showListVisble}
         onRequestClose={() => setShowIsVisible(false)}
       >
-        <TodoModal list={list} closeModal={() => setShowIsVisible(false)} />
+        <TodoModal
+          list={list}
+          closeModal={() => setShowIsVisible(false)}
+          updateList={updateList}
+        />
       </Modal>
       <TouchableOpacity
         style={[styles.listContainer, { backgroundColor: list.color }]}
@@ -31,12 +36,12 @@ export default TodoList = ({ list }) => {
 
         <View>
           <View style={{ alignItems: "center" }}>
-            <Text style={styles.count}> {completedCount} </Text>
+            <Text style={styles.count}> {remainingCount} </Text>
             <Text style={styles.subTitle}>remaining</Text>
           </View>
 
           <View style={{ alignItems: "center" }}>
-            <Text style={styles.count}> {remainingCount} </Text>
+            <Text style={styles.count}> {completedCount} </Text>
             <Text style={styles.subTitle}>Completed</Text>
           </View>
         </View>
