@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,19 +6,46 @@ import {
   TouchableOpacity,
   FlatList,
   Modal,
+  ActivityIndicator,
 } from "react-native";
 import Colors from "./app/customs/Colors";
-import tempData from "./app/data/tempData";
+//import tempData from "./app/data/tempData";
 import { AntDesign } from "@expo/vector-icons";
 import TodoList from "./app/components/TodoList";
 import AddListModal from "./app/components/AddListModal";
+import * as firebase from "firebase";
+import { firebaseApp, getList } from "./app/utils/Firebase";
+import { decode, encode } from "base-64";
+import { YellowBox } from "react-native";
+
+YellowBox.ignoreWarnings(["Setting a timer"]);
+if (!global.btoa) global.btoa = encode;
+if (!global.atob) global.atob = decode;
+
 export default function App() {
   const [isVisible, setIsVisble] = useState(false);
-  const [lists, setLists] = useState(tempData);
+  const [lists, setLists] = useState([]);
+  const [user, setUser] = useState({});
+  const [loading, setLoading] = useState(true);
 
   /*const toggleAddTodoModal = () => {
     setIsVisble(true);
   };*/
+
+  useEffect(() => {
+    firebaseApp((error, user) => {
+      if (error) {
+        return alert("Uh Oh.. something went wrong");
+      }
+
+      getList((lists) => {
+        setLists(lists);
+        setLoading(false);
+      });
+      setUser(user);
+      console.log(user.uid);
+    });
+  }, []);
 
   const renderList = (list) => {
     return <TodoList list={list} updateList={updateList} />;
@@ -39,6 +66,13 @@ export default function App() {
   };
 
   //console.log("Probando el arreglo de datos", lists);
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color={Colors.blue} />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -49,6 +83,10 @@ export default function App() {
       >
         <AddListModal closeModal={() => setIsVisble(false)} addList={addList} />
       </Modal>
+
+      <View>
+        <Text>user: {user.uid} </Text>
+      </View>
 
       <View style={{ flexDirection: "row" }}>
         <View style={styles.dividir} />
@@ -72,7 +110,7 @@ export default function App() {
       <View style={{ height: 275, paddingLeft: 32 }}>
         <FlatList
           data={lists}
-          keyExtractor={(item) => item.name}
+          keyExtractor={(item) => item.id.toString()}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => renderList(item)}
