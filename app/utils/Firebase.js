@@ -35,11 +35,7 @@ export function firebaseApp(callback) {
 }
 
 export function getList(callback) {
-  let ref = firebase
-    .firestore()
-    .collection("users")
-    .doc(userId())
-    .collection("list");
+  let ref = ref_().orderBy("name");
 
   unsubscribe = ref.onSnapshot((snopShot) => {
     lists = [];
@@ -47,10 +43,28 @@ export function getList(callback) {
       lists.push({ id: doc.id, ...doc.data() });
     });
 
-    console.log(lists);
+    //console.log(lists);
 
     callback(lists);
   });
+}
+
+export function addListFirebase(list) {
+  let ref = ref_();
+  ref.add(list);
+}
+
+export function updateListFirebase(list) {
+  let ref = ref_();
+  ref.doc(list.id).update(list);
+}
+
+function ref_() {
+  return firebase
+    .firestore()
+    .collection("users")
+    .doc(userId())
+    .collection("list");
 }
 
 export function userId() {

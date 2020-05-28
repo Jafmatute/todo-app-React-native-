@@ -9,12 +9,16 @@ import {
   ActivityIndicator,
 } from "react-native";
 import Colors from "./app/customs/Colors";
-//import tempData from "./app/data/tempData";
 import { AntDesign } from "@expo/vector-icons";
 import TodoList from "./app/components/TodoList";
 import AddListModal from "./app/components/AddListModal";
 import * as firebase from "firebase";
-import { firebaseApp, getList } from "./app/utils/Firebase";
+import {
+  firebaseApp,
+  getList,
+  addListFirebase,
+  updateListFirebase,
+} from "./app/utils/Firebase";
 import { decode, encode } from "base-64";
 import { YellowBox } from "react-native";
 
@@ -53,16 +57,22 @@ export default function App() {
 
   const addList = (list) => {
     //console.log(list);
-    setLists([...lists, { ...list, id: lists.length + 1, todos: [] }]);
+    //setLists([...lists, { ...list, id: lists.length + 1, todos: [] }]);
+    addListFirebase({
+      name: list.name,
+      color: list.color,
+      todos: [],
+    });
   };
 
   updateList = (list) => {
     //console.log(list);
-    setLists(
+    /*setLists(
       lists.map((item) => {
         return item.id === list.id ? list : item;
       })
-    );
+    );*/
+    updateListFirebase(list);
   };
 
   //console.log("Probando el arreglo de datos", lists);

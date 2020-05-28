@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import Colors from "../customs/Colors";
-import tempData from "../data/tempData";
 export default AddListModal = (props) => {
   const { closeModal, addList } = props;
   const backGroundColors = [
