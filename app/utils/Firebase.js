@@ -62,9 +62,9 @@ export function updateListFirebase(list) {
 function ref_() {
   return firebase
     .firestore()
-    .collection("users")
+    .collection("article")
     .doc(userId())
-    .collection("list");
+    .collection("article");
 }
 
 export function userId() {
